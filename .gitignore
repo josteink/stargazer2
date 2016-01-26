@@ -38,3 +38,14 @@ node_modules
 
 # dont save appid and secrets to version control
 appsettings.json
+
+### Emacs ###
+# -*- mode: gitignore; -*-
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+auto-save-list
+tramp
+.\#*
