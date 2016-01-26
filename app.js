@@ -28,12 +28,12 @@ var getUrlRequest = function(url) {
     return options;
 };
 
-var getStartGazors = function(callback, stargazors) {
+var getStartGazors = function(url, callback, stargazors) {
     if (!stargazors) {
         stargazors = [];
     }
-    
-    var options = getUrlRequest("https://api.github.com/repos/josteink/wsd-mode/stargazers");
+
+    var options = getUrlRequest(url);
     req(options, function(error, response, body) {
         var json = JSON.parse(body);
 
@@ -85,10 +85,18 @@ var getCompanies = function(stargazors, callback, companies) {
 };
 
 
-
-getStartGazors(function(stargazors) {
-    console.log(stargazors);
-    getCompanies(stargazors, function(companies) {
-        console.log(companies);
-    }) ;
-});
+// check for parameters
+if (process.argv.length < 2) {
+    
+    console.log("run with: node app.js <reponame> (josteink/stargazor without the https)");
+    
+} else {
+    
+    var url = "https://api.github.com/repos/" + process.argv[2] + "/stargazers";
+    getStartGazors(url, function(stargazors) {
+        // console.log(stargazors);
+        getCompanies(stargazors, function(companies) {
+            console.log(companies);
+        }) ;
+    });
+}

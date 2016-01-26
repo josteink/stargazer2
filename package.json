@@ -2,9 +2,9 @@
   "name": "stargazer2",
   "version": "1.0.0",
   "description": "Gaze at the people who are gazing at your projects",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"No test specified\""
   },
   "repository": {
     "type": "git",
