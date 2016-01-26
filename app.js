@@ -22,22 +22,22 @@ var getUrlRequest = function(url) {
     var options = {
         url: url,
         headers: {
-            "User-agent": "Stargazors^2 (request, nodejs)"
+            "User-agent": "Stargazers^2 (request, nodejs)"
         }
     };
     return options;
 };
 
-var getStartGazors = function(url, callback, stargazors) {
-    if (!stargazors) {
-        stargazors = [];
+var getStartGazors = function(url, callback, stargazers) {
+    if (!stargazers) {
+        stargazers = [];
     }
 
     var options = getUrlRequest(url);
     req(options, function(error, response, body) {
         var json = JSON.parse(body);
 
-        // TODO: analyze headers for pagination information. recurse to obtain all stargazors
+        // TODO: analyze headers for pagination information. recurse to obtain all stargazers
         // Looks like this:
         // $ response.headers.link
         // '<https://api.github.com/repositories/27537947/stargazers?client_id=gfdgdfgclient_secret=sdfsfds&page=2>; rel="next", <https://api.github.com/repositories/27537947/stargazers?client_id=dfgdfgdfgfd&client_secret=dfgfdgfd&page=9>; rel="last"'
@@ -45,25 +45,25 @@ var getStartGazors = function(url, callback, stargazors) {
     });
 };
 
-var getCompanies = function(stargazors, callback, companies) {
+var getCompanies = function(stargazers, callback, companies) {
 
     if (!companies)
     {
         companies = [];
     }
 
-    if (!stargazors || stargazors.length === 0)
+    if (!stargazers || stargazers.length === 0)
     {
         callback(companies);
     }
     else
     {
-        console.log("Processing... (" + stargazors.length + " remaining)");
+        console.log("Processing... (" + stargazers.length + " remaining)");
 
-        var remaining = stargazors.splice(1);
-        var stargazor = stargazors[0];
+        var remaining = stargazers.splice(1);
+        var stargazer = stargazers[0];
 
-        var options = getUrlRequest(stargazor.url);
+        var options = getUrlRequest(stargazer.url);
         req(options, function(error, response, body) {
             if (response.statusCode !== 200) {
                 console.log(response);
@@ -88,14 +88,14 @@ var getCompanies = function(stargazors, callback, companies) {
 // check for parameters
 if (process.argv.length < 2) {
     
-    console.log("run with: node app.js <reponame> (josteink/stargazor without the https)");
+    console.log("run with: node app.js <reponame> (josteink/stargazer without the https)");
     
 } else {
     
     var url = "https://api.github.com/repos/" + process.argv[2] + "/stargazers";
-    getStartGazors(url, function(stargazors) {
-        // console.log(stargazors);
-        getCompanies(stargazors, function(companies) {
+    getStartGazors(url, function(stargazers) {
+        // console.log(stargazers);
+        getCompanies(stargazers, function(companies) {
             console.log(companies);
         }) ;
     });
