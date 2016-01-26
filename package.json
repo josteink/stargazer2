@@ -1,0 +1,22 @@
+{
+  "name": "stargazer2",
+  "version": "1.0.0",
+  "description": "Gaze at the people who are gazing at your projects",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/josteink/stargazer2"
+  },
+  "author": "Jostein Kjønigsen",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/josteink/stargazer2/issues"
+  },
+  "homepage": "https://github.com/josteink/stargazer2",
+  "dependencies": {
+    "request": "^2.67.0"
+  }
+}
