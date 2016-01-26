@@ -46,7 +46,7 @@ var getStargazers = function(url, callback, page, stargazers) {
     }
     var pagedUrl = url + "?page="+page;
     var options = getUrlRequest(pagedUrl);
-    
+
     req(options, function(error, response, body) {
         if (response.statusCode !== 200) {
             console.log("Error getting stargazer list: " + response.statusCode);
@@ -98,7 +98,7 @@ var getCompanies = function(stargazers, callback, companies) {
                 if (json && json.company !== null && json.company !== "") {
                     companies.push(json.company);
                 }
-                
+
                 // recurse with the remaining files.
                 getCompanies(remaining, callback, companies);
             }
@@ -108,14 +108,18 @@ var getCompanies = function(stargazers, callback, companies) {
 
 
 // check for parameters
-if (process.argv.length < 2) {
+if (config.clientId === "your appId here") {
 
-    console.log("run with: node app.js <reponame> (josteink/stargazer without the https)");
+    console.log("Application unconfigured. Please update appsettings.json");
+
+} else if (process.argv.length <= 2) {
+
+    console.log("Usage: node app.js <reponame> (josteink/stargazer without the https)");
 
 } else {
 
     var url = "https://api.github.com/repos/" + process.argv[2] + "/stargazers";
-    getStarGazers(url, function(stargazers) {
+    getStargazers(url, function(stargazers) {
         // console.log(stargazers);
         getCompanies(stargazers, function(companies) {
             console.log(companies);
