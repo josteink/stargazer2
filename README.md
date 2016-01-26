@@ -9,6 +9,7 @@ Usage is fairly simple, but needs some preparations.
 You need to [register an app at github](https://github.com/settings/developers) to
 have access to API keys. This is required to avoid uber-heavy throttling.
 
+After that, you can proceed straight to the shell:
 
 ````bash
 # get dependencies
