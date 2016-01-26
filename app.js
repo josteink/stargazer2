@@ -14,7 +14,7 @@ var getUrlRequest = function(url) {
     var clientId = config.clientId;
     var clientSecret = config.clientSecret;
     var auth = "client_id=" + clientId + "&client_secret=" + clientSecret;
-    if (url.indexOf("?" === -1)) {
+    if (url.indexOf("?") == -1) {
         url += "?" + auth;
     } else {
         url += "&" + auth;
@@ -28,20 +28,43 @@ var getUrlRequest = function(url) {
     return options;
 };
 
-var getStartGazors = function(url, callback, stargazers) {
+var getLastPage = function(headerText) {
+    // TODO: analyze headers for pagination information. recurse to obtain all stargazers
+    // Looks like this:
+    // $ response.headers.link
+    // '<https://api.github.com/repositories/27537947/stargazers?client_id=gfdgdfgclient_secret=sdfsfds&page=2>; rel="next", <https://api.github.com/repositories/27537947/stargazers?client_id=dfgdfgdfgfd&client_secret=dfgfdgfd&page=9>; rel="last"'
+    return 9;
+};
+
+var getStartGazors = function(url, callback, page, stargazers) {
     if (!stargazers) {
         stargazers = [];
     }
 
-    var options = getUrlRequest(url);
+    if (!page) {
+        page = 1;
+    }
+    var pagedUrl = url + "?page="+page;
+    var options = getUrlRequest(pagedUrl);
+    
     req(options, function(error, response, body) {
-        var json = JSON.parse(body);
+        if (response.statusCode !== 200) {
+            console.log("Error getting stargazer list: " + response.statusCode);
+            console.log(response.body);
+        } else {
+            var json = JSON.parse(body);
+            stargazers = stargazers.concat(json);
+            console.log("Found " + stargazers.length + "...");
 
-        // TODO: analyze headers for pagination information. recurse to obtain all stargazers
-        // Looks like this:
-        // $ response.headers.link
-        // '<https://api.github.com/repositories/27537947/stargazers?client_id=gfdgdfgclient_secret=sdfsfds&page=2>; rel="next", <https://api.github.com/repositories/27537947/stargazers?client_id=dfgdfgdfgfd&client_secret=dfgfdgfd&page=9>; rel="last"'
-        callback(json);
+            var lastPage = getLastPage(response.headers.link);
+            if (page > lastPage) {
+                callback(stargazers);
+            }
+            else {
+                page++;
+                getStartGazors(url, callback, page, stargazers);
+            }
+        }
     });
 };
 
@@ -74,11 +97,10 @@ var getCompanies = function(stargazers, callback, companies) {
                 var json = JSON.parse(body);
                 if (json && json.company !== null && json.company !== "") {
                     companies.push(json.company);
-                    // recurse with the remaining files.
                 }
-                setTimeout(function() {
-                    getCompanies(remaining, callback, companies);
-                }, 200);
+                
+                // recurse with the remaining files.
+                getCompanies(remaining, callback, companies);
             }
         });
     }
@@ -87,11 +109,11 @@ var getCompanies = function(stargazers, callback, companies) {
 
 // check for parameters
 if (process.argv.length < 2) {
-    
+
     console.log("run with: node app.js <reponame> (josteink/stargazer without the https)");
-    
+
 } else {
-    
+
     var url = "https://api.github.com/repos/" + process.argv[2] + "/stargazers";
     getStartGazors(url, function(stargazers) {
         // console.log(stargazers);
