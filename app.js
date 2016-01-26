@@ -33,6 +33,11 @@ var splitStringBy = function(string, splitter, results) {
         results = [];
     }
 
+    // NPE prevention
+    if (!string) {
+        return "";
+    };
+    
     var splitterPos = string.indexOf(splitter);
     if (splitterPos == -1) {
         results.push(string);
@@ -93,7 +98,7 @@ var getStargazers = function(url, callback, page, stargazers) {
             console.log("Found " + stargazers.length + "...");
 
             var lastPage = getLastPage(response.headers.link);
-            if (page > lastPage) {
+            if (page > lastPage || lastPage == 1) {
                 callback(stargazers);
             }
             else {
