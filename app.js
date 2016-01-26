@@ -28,12 +28,48 @@ var getUrlRequest = function(url) {
     return options;
 };
 
+var splitStringBy = function(string, splitter, results) {
+    if (!results) {
+        results = [];
+    }
+
+    var splitterPos = string.indexOf(splitter);
+    if (splitterPos == -1) {
+        results.push(string);
+        return results;
+    } else {
+        var item = string.substring(0, splitterPos);
+        results.push(item);
+        var rest = string.substring(splitterPos + splitter.length);
+        return splitStringBy(rest, splitter, results);
+    }
+};
+
 var getLastPage = function(headerText) {
-    // TODO: analyze headers for pagination information. recurse to obtain all stargazers
+
+    // analyze headers for pagination information. recurse to obtain all stargazers
     // Looks like this:
     // $ response.headers.link
     // '<https://api.github.com/repositories/27537947/stargazers?client_id=gfdgdfgclient_secret=sdfsfds&page=2>; rel="next", <https://api.github.com/repositories/27537947/stargazers?client_id=dfgdfgdfgfd&client_secret=dfgfdgfd&page=9>; rel="last"'
-    return 9;
+    var subHeaders = splitStringBy(headerText, ", ");
+
+    for (var i = 0; i < subHeaders.length; i++) {
+        var subHeader = subHeaders[i];
+        var parts = splitStringBy(subHeader, "; ");
+
+        if (parts[1] === 'rel="last"') {
+            var link = parts[0];
+            var marker = "page=";
+            var pagePos = link.indexOf(marker);
+            // includes trailing >
+            var pageG = link.substring(pagePos + marker);
+            var page = pageG.substring(0,pageG.length-1);
+            return page;
+        }
+    }
+
+    // found nothing. assume only one page.
+    return 1;
 };
 
 var getStargazers = function(url, callback, page, stargazers) {
