@@ -36,7 +36,7 @@ var getLastPage = function(headerText) {
     return 9;
 };
 
-var getStartGazors = function(url, callback, page, stargazers) {
+var getStargazers = function(url, callback, page, stargazers) {
     if (!stargazers) {
         stargazers = [];
     }
@@ -62,7 +62,7 @@ var getStartGazors = function(url, callback, page, stargazers) {
             }
             else {
                 page++;
-                getStartGazors(url, callback, page, stargazers);
+                getStargazers(url, callback, page, stargazers);
             }
         }
     });
@@ -115,7 +115,7 @@ if (process.argv.length < 2) {
 } else {
 
     var url = "https://api.github.com/repos/" + process.argv[2] + "/stargazers";
-    getStartGazors(url, function(stargazers) {
+    getStarGazers(url, function(stargazers) {
         // console.log(stargazers);
         getCompanies(stargazers, function(companies) {
             console.log(companies);
