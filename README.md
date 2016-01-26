@@ -25,7 +25,8 @@ $ $EDITOR appsettings.json
 $ node app.js josteink/wsd-mode
 
 # wait
-[ 'Google', 'Uber', 'Samsung', 'SUSE', 'Red hat', 'Rackspace', 'Amazon', ... ]
+[ 'Google', 'Microsoft', 'Uber', 'Samsung', 'SUSE', 'Red hat',
+  'Rackspace', 'Amazon', ... ]
 
 # start planning for world domination
 ````
